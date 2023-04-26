@@ -1,0 +1,251 @@
+# Все Query
+type Query {
+  # Запись на прием
+  getUserInfo(userId: String!):UserInfo!
+  getDepts(idOrg: String!): [DeptInfo!]!
+  getTopics(idOrg: String, idDept:String): [Topic!]!
+  getMakeAppointment(organizationId: String, idDept: String, dateStart: String, dateEnd: String, makeAppointmentId: String, numberEntriesPage: Int, page: Int, columnName: String, typeSorting: String): [RecordData!]!
+  getTimeSlots(idDay:String!, idTopic: String!): [TimeSlots!]!
+  getAvailableDays(idDept: String ,idTopic: String):[AvailableDay!]!
+  blockTimeInterval(idUser: String ,idTimeInterval: String): CheckFlag!
+  getDataToReductionAppointment(makeAppointmentId: String, organizationId: String): RecordData!
+  # Темы
+  getTopicsList(idOrg: String, numberEntriesPage: Int, page: Int, columnName: String  typeSorting: String, typeSorting: String, columnName: String):[Topic!]!
+  getDataToReductionTopic(idTopic: String): Topic!
+  # Дни
+  getDaysList(numberEntriesPage: Int, page: Int, idDept: String, dateStart: String, dateEnd: String,  typeSorting: String, columnName: String): [AvailableDay!]!
+  getDataToReductionDay(idDay: String, idDept: String): AvailableDay!
+  # Время (раздел)
+  getSlotsList(idDept: String, date: String, page: Int, numberEntriesPage: Int, typeSorting: String, columnName: String):[TimeSlots!]!
+  # Время данные для редактирования
+  getDataToReductionSlot(idDept: String, idSlot: String, date: String): TimeSlots!
+}
+
+# Все мутации
+type Mutation {
+  # Авторизация
+  login(email: String!, password: String!): User
+  # Создание Записи на прием
+  makingAppointment(
+    usId: String, 
+    organizationId: String, 
+    idSlot: String, 
+    firstName: String, 
+    midlName: String, 
+    lastName: String,  
+    phoneUser: String,
+    emailUser: String, 
+    personalAccount: String, 
+    notificationMail: Boolean, 
+    idTopic: String, 
+    ClientExternalSystem: String,
+    AppealExternalSystem: String, 
+    idDept: String, 
+    comment: String
+  ):[RecordData!]!
+
+  # Редактироване Записи на прием
+  changeAppointment(
+    firstName: String, 
+    middleName: String, 
+    astName: String, 
+    phoneUser: String, 
+    emailUser: String,
+    personalAccount: String, 
+    appointmentId: String, 
+    comment: String, 
+    notif: Boolean, 
+    organizationId: String
+  ): RecordData!
+
+  # Удаление Записи на прием
+  deleteAppointment(
+    makeAppointmentId: String
+  ): CheckFlag!
+
+  # Создание новой темы
+  addTopic (
+    idOrg: String,  
+    topicName: String,  
+    descName: String,  
+    selfService: Boolean, 
+    avail: Boolean, 
+    spec: Boolean,
+    listIdDepts: [String]
+  ): CheckFlag!
+
+  # Редактирование темы
+  changeTopic (
+    idTopic: String, 
+    idOrg: String, 
+    topicName: String,  
+    descName: String,  
+    selfService: Boolean, 
+    avail: Boolean, 
+    spec: Boolean, 
+    listIdDepts: [String]
+  ): CheckFlag!
+
+  # Удаление темы
+  deleteTopic(idTopic: String): CheckFlag!
+
+  # Создание дня
+  addDay(idDept: String, date: String, timeOverlayControl: Boolean, avail: Boolean): CheckFlag!
+
+  # Редактирование дня
+  changeDay(idDept: String, date: String, timeOverlayControl: Boolean, avail: Boolean, idDay: String): CheckFlag!
+
+  # Удаление дня
+  deleteDay(idDay: String): CheckFlag!
+
+  # Копирование дня
+  copyDay(idDayFrom: String, date: String): CheckFlag!
+
+  # Создание интервала времени
+  addSlot(slotName: String, timeStart: String, timeEnd: String, idTopic: Strin, date: String, idDept: String): CheckFlag!
+
+  # Редактирование интервала времени
+  changeSlot(idDay: String, slotName: String, timeStart: String, timeEnd: String, idTopic: String, idSlot: String): CheckFlag!
+
+  # Удаление времени
+  deleteSlot(idSlot: String): CheckFlag!
+  
+}
+
+# Все подписки
+type Subscription {
+
+}
+
+# --- === Типы --- ===
+
+# Пользователь
+type User {
+  idUser: String
+  login: String
+  nameUser: String
+  token: String
+  roles: [String]
+  extOrg: Boolean
+  isActive: Boolean
+  mainAdmin: Boolean
+  operator: Boolean
+  admin: Boolean
+}
+
+# Организация пользователя
+type UserInfo {
+  organizationId: String!
+  organizationName: String
+  officialOrganizationName: String
+  nameDesc: String
+  officialOrganizationNameFull: String
+  phone: String
+  avail: Boolean
+  active: Boolean
+}
+
+# Подразделения
+type DeptInfo {
+  IdDept: String
+  organizationId: String
+  nameDept: String
+  officialNameDept: String
+  descDept: String
+  address: String
+  mail: String
+  phone: String
+  active: Boolean
+}
+
+# Запись на прием таблица
+type RecordData {
+  deptAddress: String
+  nameOrg: String
+  idAppointment: String
+  idTimeSlot: String
+  clientName: String
+  mobilePhone: String
+  email: String
+  personalAccount: String
+  emailNotif: Boolean
+  idTopic: String
+  active: Boolean
+  entryNumber: String
+  comment:String
+  idClient: String
+  idDay: String
+  fromToTimeInterval: String
+  timeStart: String
+  timeEnd: String
+  timeInterval: String
+  topicDesc: String
+  idDept: String
+  idOrg: String
+  date: String
+  dayOfTheWeek: String
+  firstName: String
+  middleName: String
+  lastName: String
+  dateFormat: String
+  totalCount: Int
+  pagesCont: Int
+}
+
+# Время записи на прием
+type TimeSlots {
+  isActive: Boolean
+  dateStart: String
+  dateEnd: String
+  timeInterval: String
+  idTimeInterval: String
+  idDay: String
+  dateFormat: String
+  idTopic: String
+  topicName: String
+  idAppointment: String
+  total: Int
+  pagesCount: Int
+}
+
+# Получение доступных дней для Записи на прием
+type AvailableDay {
+  idDay: String
+  idDept: String
+  freeDate: String
+  dayActive: Boolean
+  timeOverlayControl: Boolean
+  timeOverlayControlString: String
+  avail: Boolean
+  availString: String
+  activeString: String
+  weekday: String
+  slotsCount: Int
+  pagesCount: Int
+  total: Int
+  apptsCount: Int
+}
+
+# Блокировка выбраного времени Записи на прием / Удаление Записи на прием / Создание новой темы (раздел Темы) / Редактирование Темы
+type CheckFlag {
+  isComplete: Boolean
+  answerId: String
+  errCode: Int
+  errName: String
+}
+
+# Темы таблица (раздел Темы)
+type Topic {
+  idTopic: String
+  idOrg: String
+  topicName: String
+  descName: String
+  avail: Boolean
+  active: Boolean
+  spec: Boolean
+  totalCount: Int
+  pagesCont: Int
+  selfService: Boolean
+  idDeptsSelected: [String]
+  idDeptsOthers: [String]
+}
